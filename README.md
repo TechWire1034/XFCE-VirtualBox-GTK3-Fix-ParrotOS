@@ -1,53 +1,41 @@
-# XFCE VirtualBox GTK3 Fix for Parrot OS: Solving "Failed to load module 'xapp-gtk3-module'"
+# XFCE VirtualBox GTK3 Module Fix for Parrot OS
 
-## Overview
-This guide documents how to resolve the `Gtk-Message: Failed to load module "xapp-gtk3-module"` error when launching the VirtualBox 7.1.8 GUI on Parrot OS 6.x with XFCE.  
-The error occurs because VirtualBox’s Qt-based GUI attempts to load the xapp-gtk3-module for desktop integration in XFCE, but this module is missing in Parrot OS’s repositories (based on Debian Bullseye).  
-The solution involves installing libxapp-gtk3-module from Debian Sid and verifying the setup in XFCE.
+## Issue
 
-## Environment
-- **Operating System**: Parrot OS 6.x (Lory), based on Debian Bullseye
-- **Desktop Environment**: XFCE
-- **VirtualBox Version**: 7.1.8 (build 168469)
-- **Kernel**: 6.12.12-amd64
-
-## Problem Description
-When running `virtualbox` or `virtualbox --style Fusion` on Parrot OS with XFCE, the following error appears, and the GUI fails to launch:  
+When running VirtualBox on **Parrot OS (XFCE)**, you may encounter the following message in the terminal:
 
 Gtk-Message: Failed to load module "xapp-gtk3-module"
 
 
+This message appears because the `xapp-gtk3-module` (commonly used for desktop integration features like theming and window controls) is not installed by default on Parrot OS, as it typically exists in Linux Mint and some other distributions.
+
 ## Cause
-- The xapp-gtk3-module is part of the XApps project (developed by Linux Mint) and enhances GTK3 application integration in XFCE.
-- Parrot OS’s repositories (Debian Bullseye, Parrot OS, Oracle VirtualBox) do not include xapp or libxapp-gtk3-module.
-- VirtualBox’s GUI expects this module for proper rendering in XFCE, leading to the error.
 
-## Steps to Reproduce
-1. Install VirtualBox 7.1.8 on Parrot OS with XFCE.
-2. Launch VirtualBox via terminal with `virtualbox` or `virtualbox --style Fusion`.
-3. Observe the Gtk-Message error in XFCE.
+VirtualBox uses GTK3 for its user interface, and it tries to load optional modules like `xapp-gtk3-module` to integrate better with your desktop environment. Since Parrot OS is based on Debian and doesn’t include this module in its repositories, the system throws a harmless warning message.
 
-## Solution
-1. **Install `libxapp-gtk3-module` manually from Debian Sid**  
-   - Add the Debian Sid repository (use caution due to potential instability):  
-     ```bash
-     echo "deb http://deb.debian.org/debian sid main" | sudo tee -a /etc/apt/sources.list
-     ```
-   - Update package lists and install the module for XFCE:  
-     ```bash
-     sudo apt update
-     sudo apt install libxapp-gtk3-module
-     ```
-   - (Optional) Remove Sid to avoid conflicts: edit `/etc/apt/sources.list` and delete the added line.
+## Fix
 
-2. **Test VirtualBox GUI launch in XFCE**  
-   - Run VirtualBox:  
-     ```bash
-     virtualbox
-     ```
-   - Verify the GUI launches without the error in XFCE.
+To resolve this, you can manually install the `libxapp-gtk3-module` package from the **Debian Sid (Unstable)** repository. This is a small, standalone package that won’t disrupt your system if installed carefully.
 
-## Notes
-- This fix is tailored for Parrot OS 6.x with XFCE and VirtualBox 7.1.8. It may work on Debian-based systems with XFCE but requires adaptation for other OSes (e.g., Fedora, Arch) or desktop environments.
-- Use Debian Sid cautiously; consider pinning the package or finding a safer source for XFCE compatibility.
-- Test after each step to ensure stability in XFCE.
+### Steps:
+
+1. Download the latest `libxapp-gtk3-module` `.deb` package from [Debian Sid packages archive](https://packages.debian.org/sid/libxapp-gtk3-module).
+
+    Example:
+    ```bash
+    wget http://ftp.de.debian.org/debian/pool/main/x/xapp/libxapp-gtk3-module_2.8.2-1_amd64.deb
+    ```
+
+2. Install the package using `dpkg`:
+    ```bash
+    sudo dpkg -i libxapp-gtk3-module_*.deb
+    ```
+
+3. Done. The warning message should no longer appear when launching VirtualBox.
+
+## Important Notes
+
+- This message is **harmless** and does not affect the functionality of VirtualBox. You can safely ignore it if you prefer.
+- **No need to reinstall the VirtualBox Extension Pack** — it is unrelated to this issue.
+
+
