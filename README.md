@@ -18,9 +18,9 @@ Install the `libxapp-gtk3-module` package and its dependencies from the Debian r
    sudo apt update
    sudo apt install libxapp-gtk3-module libxapp1 xapps-common libgnomekbd-common libgnomekbd8
 
-   Verify the warning is gone by launching VirtualBox:
-
-virtualbox
+Verify the warning is gone by launching VirtualBox:
+    
+    virtualbox
 
 Important Notes
 The warning is harmless and does not affect VirtualBox functionality.
